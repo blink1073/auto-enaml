@@ -34,9 +34,9 @@ class AllTypes(Atom):
 
 
 if __name__ == '__main__':
-    all = AllTypes()
+    all_types = AllTypes()
     app = QtApplication()
-    view = auto_view(all,
+    view = auto_view(all_types,
                      'boolean_value',
                      'str_value',
                      auto_item('uni_value', tool_tip='Hey There'),
