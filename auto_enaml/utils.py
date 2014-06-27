@@ -1,5 +1,5 @@
 
-class MInfo(object):
+class _MInfo(object):
 
     __slots__ = ('model', 'name')
 
@@ -14,6 +14,10 @@ class MInfo(object):
     @property
     def validator(self):
         return self.member.validate_mode[1]
+
+    @property
+    def value(self):
+        return getattr(self.model, self.name)
 
 
 class _Partial(object):
