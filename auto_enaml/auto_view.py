@@ -1,10 +1,4 @@
-#
-# (C) Copyright 2013 Enthought, Inc., Austin, TX
-# All right reserved.
-#
-# This file is open source software distributed according to the terms in
-# LICENSE.txt
-#
+
 import enaml
 from utils import _MInfo, _Partial
 
@@ -15,11 +9,10 @@ with enaml.imports():
 def auto_item(info,  **kwargs):
     if isinstance(info, str):
         return _Partial(info, **kwargs)
-    if isinstance(info, tuple) and len(info) == 2:
+    elif isinstance(info, tuple) and len(info) == 2:
         info = _MInfo(*info)
-    if not isinstance(info, _MInfo):
-        raise TypeError('"info" must be a str, a 2-tuple of (model, name) or '
-                        'an MInfo object')
+    else:
+        raise TypeError('"info" must be a str, a 2-tuple of (model, name)')
     return AutoItem(minfo=info, **kwargs)
 
 

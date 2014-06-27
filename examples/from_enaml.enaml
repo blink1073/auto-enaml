@@ -36,6 +36,7 @@ class AllTypes(Atom):
 
 enamldef Main(MainWindow): main:
     attr model = AllTypes()
+    title = 'Auto Enaml Demo'
     Container:
         AutoItem: minfo = (model, 'boolean_value')
         AutoItem: minfo = (model, 'int_value')

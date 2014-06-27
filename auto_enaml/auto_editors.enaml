@@ -6,11 +6,9 @@ from enaml.stdlib.fields import IntField, FloatField
 from enaml.widgets.api import (
     CheckBox, ComboBox, DateSelector, Field, Form, Container,
     Label, PushButton, SpinBox, TimeSelector, Window)
-from enaml.layout.layout_helpers import align, vertical, horizontal, spacer  
-from enaml.validator import Validator, Bool
-from atom.api import Bool, Str, Value    
+from enaml.validator import Validator  
 from atom.api import (Bool, Enum, Float, Int, Range, Unicode, Str,
-                      FloatRange, Long)
+                      FloatRange, Long, Value)
 from utils import _MInfo, _Partial
 
 
@@ -26,7 +24,7 @@ def _check_minfo(parent):
     if isinstance(minfo, tuple) and len(minfo) == 2:
         parent.minfo = minfo = _MInfo(model=minfo[0], name=minfo[1])
     if not isinstance(minfo, _MInfo):
-        raise TypeError("minfo must be of type _MInfo or a tuple of (model, name)")
+        raise TypeError("minfo must be a tuple of (model, name)")
 
 
 def _update_item(item):
