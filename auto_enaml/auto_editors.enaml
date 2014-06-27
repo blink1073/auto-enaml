@@ -1,0 +1,212 @@
+#
+# (C) Copyright 2013 Enthought, Inc., Austin, TX
+# All right reserved.
+#
+# This file is open source software distributed according to the terms in
+# LICENSE.txt
+#
+from datetime import date, time
+
+import ast
+from collections import namedtuple
+from string import capwords
+from enaml.core.api import Include
+from enaml.stdlib.fields import IntField, FloatField
+from enaml.widgets.api import (
+    CheckBox, ComboBox, DateSelector, Field, Form, Container,
+    Label, PushButton, SpinBox, TimeSelector, Window)
+from enaml.layout.layout_helpers import align, vertical, horizontal, spacer  
+from enaml.validator import Validator, Bool
+from atom.api import Bool, Str, Value    
+from atom.api import (Bool, Enum, Float, Int, Range, Unicode, Str,
+                      FloatRange, Long)
+
+
+AtomDesc = namedtuple('AtomDesc', 'name member label')
+
+
+def _get_editor(model, atom_desc):
+    kwargs = {'model': model, 'atom_desc': atom_desc}
+    member = atom_desc.member
+    factory = ATOM2ENAML.get(type(member), ATOM2ENAML[DefaultEditor])
+    editor = factory(member)
+    return editor(**kwargs)
+
+
+def _model_attrs(model, names=None):
+    attrs = []
+    members = model.members()
+    if not names:
+        names = [
+            name for name in sorted(members.keys())
+            if not name.startswith('_')]
+    for name in names:
+        attr = members[name]
+        label = capwords(name.replace('_', ' '))
+        desc = AtomDesc(name, attr, label)
+        attrs.append(desc)
+    return attrs
+
+
+def update_widget(widget, model_name):
+    if not isinstance(model_name, tuple) or not len(model_name) == 2:
+        raise ValueError('"model_name" attr of an AutoItem must be a (Atom, str) tuple')
+    model, name = model_name
+    widget.label.text = capwords(name.replace('_', ' '))
+    desc = _model_attrs(model, [name])[0]
+    widget.editor = _get_editor(model, desc)
+    for w in [widget.label, widget.editor]:
+        w.tool_tip = widget.tool_tip
+        w.status_tip = widget.status_tip
+        w.font = widget.font
+
+
+enamldef AutoItem(Form): item:
+    attr model_name = (None, '')
+    attr editor = Field()
+    attr centerline = 0.3
+    padding = 0
+    constraints = [lbl.width == editor.width * centerline]
+    alias label: lbl
+    Label: lbl: pass
+    Include: inc: objects << [editor]
+    initialized :: update_widget(item, model_name)
+    model_name :: update_widget(item, model_name)
+
+
+enamldef AutoView(Container):
+    attr model_names
+    attr centerline = 0.3
+    padding = 5
+    alias objects: inc.objects
+    Include: inc: objects << [(AutoItem(model_name=(model_names[0], i), 
+                                        centerline=centerline) 
+                               for i in model_names[1])]
+
+
+enamldef AutoWindow(Window): _win:
+    attr model
+    title = "Edit Properties"
+    Include:
+        objects << [(AutoItem((model, name)) 
+                     for name in sorted(model.members.keys()) 
+                     if not name.startswith('_'))]
+
+
+enamldef _AutoView(Container): _view:
+    attr objects
+    padding = 5
+    Include:
+        objects << _view.objects
+
+
+enamldef _AutoWindow(Window): _win:
+    attr view
+    title = "Edit Properties"
+    Include:
+        objects << [_win.view]
+
+
+enamldef BoolEditor(CheckBox):
+    attr model
+    attr atom_desc
+    checked := getattr(model, atom_desc.name)
+
+
+enamldef EnumEditor(ComboBox):
+    attr model
+    attr atom_desc
+    index << atom_desc.member.validate_mode[1].index(getattr(model, atom_desc.name))
+    index ::
+        item_value = atom_desc.member.validate_mode[1][self.index]
+        setattr(model, atom_desc.name, item_value)
+    items = list(atom_desc.member.validate_mode[1])
+
+
+enamldef FloatEditor(FloatField):
+    attr model
+    attr atom_desc
+    value := getattr(model, atom_desc.name)
+
+
+enamldef FloatRangeEditor(FloatField):
+    attr model
+    attr atom_desc
+    value := getattr(model, atom_desc.name)
+    minimum = atom_desc.member.validate_mode[1][0]
+    maximum = atom_desc.member.validate_mode[1][1]
+
+
+enamldef IntEditor(IntField):
+    attr model
+    attr atom_desc
+    value << int(getattr(model, atom_desc.name))
+    value :: setattr(model, atom_desc.name, int(value))
+
+
+enamldef IntRangeEditor(SpinBox):
+    attr model
+    attr atom_desc
+    value := getattr(model, atom_desc.name)
+    minimum = atom_desc.member.validate_mode[1][0]
+    maximum = atom_desc.member.validate_mode[1][1]
+
+
+enamldef StrEditor(Field):
+    attr model
+    attr atom_desc
+    text := getattr(model, atom_desc.name)
+
+
+class DefaultValidator(Validator):
+    
+    is_valid = Bool(True)
+    name = Str()
+    model = Value()
+
+    def validate(self, text):
+        attr = getattr(self.model, self.name)
+        try:
+            old = ast.literal_eval(str(attr))
+        except:
+            return False
+        try:
+            new = ast.literal_eval(text)
+        except:
+            return False
+        return type(new) == type(old)
+
+
+enamldef DefaultEditor(Field): 
+    attr model
+    attr atom_desc
+    validator = DefaultValidator(model=model, name=atom_desc.name)
+    text << str(getattr(model, atom_desc.name))
+    text ::
+        name = atom_desc.name
+        attr = getattr(model, name)
+        if isinstance(attr, str):
+            setattr(model, name, text)
+        else:
+            try:
+                setattr(model, name, value)
+            except:
+                try:
+                    value = ast.literal_eval(text)
+                    setattr(model, name, value)
+                except:
+                    text = str(attr)
+
+
+# Dictionary from atom_type -> enaml component factories.
+ATOM2ENAML = {
+    Bool: lambda atom_type: BoolEditor,
+    Enum: lambda atom_type: EnumEditor,
+    Float: lambda atom_type: FloatEditor,
+    Int: lambda atom_type: IntEditor,
+    Long: lambda atom_type: IntEditor,
+    Unicode: lambda atom_type: StrEditor,
+    Str: lambda atom_type: StrEditor,
+    Range: lambda atom_type: IntRangeEditor,
+    FloatRange: lambda atom_type: FloatRangeEditor,
+    DefaultEditor: lambda atom_type: DefaultEditor}

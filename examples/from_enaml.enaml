@@ -1,0 +1,45 @@
+
+from auto_enaml import AutoItem, AutoView
+from enaml.widgets.api import MainWindow, Container, Form
+from enaml.core.include import Include
+from atom.api import (Atom, Bool, Enum, Float, Int, Str, Long, Coerced,
+                      Range, Unicode, FloatRange, observe, List, Dict, Tuple)
+
+
+class AllTypes(Atom):
+    """ A simple class with all kinds of traits
+
+    """
+    boolean_value = Bool(True)
+    int_value = Int(42)
+    float_value = Float(3.141592)
+    enum_value = Enum("foo", "bar", "baz", "qux")
+    int_range_value = Range(0, 10)
+    long_value = Long(10)
+    float_range_value = FloatRange(0.0, 1.0)
+    uni_value = Unicode("Word")
+    str_value = Str("Hello")
+    coerced_value = Coerced(int)
+    list_value = List(default=[1, 3, 4])
+    dict_value = Dict(default=dict(a=1, b=2))
+    tuple_value = Tuple(default=(1, 2, 3))
+
+
+enamldef Main(MainWindow):
+    attr model = AllTypes()
+    Container:
+        AutoItem: model_name = (model, 'boolean_value')
+        AutoItem: model_name = (model, 'int_value')
+        AutoItem: 
+            model_name = (model, 'enum_value')
+            tool_tip = 'Hey There'
+        AutoView: 
+            model_names =(model, ['boolean_value', 'int_value', 'enum_value'])
+            initialized :: 
+                objects[0].label.text = 'HAHAHAHA'
+        AutoView:
+            model_names = (model, model.members().keys())
+            initialized ::
+                for o in objects:
+                    o.label.tool_tip = str(o)
+
