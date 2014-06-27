@@ -38,7 +38,7 @@ enamldef Main(MainWindow):
             initialized :: 
                 objects[0].label.text = 'HAHAHAHA'
         AutoView:
-            model_names = (model, model.members().keys())
+            model_names = (model, list(model.members().keys()))
             initialized ::
                 for o in objects:
                     o.label.tool_tip = str(o)
