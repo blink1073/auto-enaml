@@ -1,16 +1,4 @@
-#----------------------------------------------------------------------------
-#
-#  Copyright (c) 2013-14, Enthought, Inc.
-#  All rights reserved.
-#
-#  This software is provided without warranty under the terms of the BSD
-#  license included in /LICENSE.txt and may be redistributed only
-#  under the conditions described in the aforementioned license.  The license
-#  is also available online at http://www.enthought.com/licenses/BSD.txt
-#
-#  Thanks for using Enthought open source!
-#
-#----------------------------------------------------------------------------
+
 from enaml.qt.qt_application import QtApplication
 from atom.api import (Atom, Bool, Enum, Float, Int, Str, Long, Coerced,
                       Range, Unicode, FloatRange, observe, List, Dict, Tuple)
@@ -55,7 +43,5 @@ if __name__ == '__main__':
                      auto_item('tuple_value', background='green'))
     win = auto_window(view)
     win.show()
-
-    # what we need now is View and Item replacements
 
     app.start()

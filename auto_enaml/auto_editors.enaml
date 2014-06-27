@@ -1,14 +1,5 @@
-#
-# (C) Copyright 2013 Enthought, Inc., Austin, TX
-# All right reserved.
-#
-# This file is open source software distributed according to the terms in
-# LICENSE.txt
-#
-from datetime import date, time
 
 import ast
-from collections import namedtuple
 from string import capwords
 from enaml.core.api import Include
 from enaml.stdlib.fields import IntField, FloatField
@@ -30,7 +21,7 @@ def _get_editor(model, name):
     return editor(minfo=minfo)
 
 
-def update_widget(widget, minfo):
+def _update_widget(widget, minfo):
     if not isinstance(minfo, MInfo):
         if isinstance(minfo, tuple) and len(minfo) == 2:
             widget.minfo = minfo = MInfo(model=minfo[0], name=minfo[1])
@@ -52,9 +43,10 @@ enamldef AutoItem(Form): _item:
     constraints = [lbl.width == editor.width * centerline]
     alias label: lbl
     Label: lbl: pass
-    Include: inc: objects << [editor]
-    initialized :: update_widget(_item, minfo)
-    minfo :: update_widget(_item, minfo)
+    Include: inc: 
+        objects << [editor]
+    initialized :: _update_widget(_item, minfo)
+    minfo :: _update_widget(_item, minfo)
 
 
 def _set_auto_view(model, mitems, centerline):
@@ -97,15 +89,13 @@ enamldef AutoWindow(Window): _win:
 enamldef _AutoView(Container): _view:
     attr objects
     padding = 5
-    Include:
-        objects << _view.objects
+    Include: objects << _view.objects
 
 
 enamldef _AutoWindow(Window): _win:
     attr view
     title = "Edit Properties"
-    Include:
-        objects << [_win.view]
+    Include: objects << [_win.view]
 
 
 enamldef BoolEditor(CheckBox):
@@ -153,13 +143,10 @@ enamldef StrEditor(Field):
 
 
 class DefaultValidator(Validator):
-    
-    is_valid = Bool(True)
-    name = Str()
-    model = Value()
+    minfo = Value()
 
     def validate(self, text):
-        attr = getattr(self.model, self.name)
+        attr = getattr(self.minfo.model, self.minfo.name)
         try:
             old = ast.literal_eval(str(attr))
         except:
@@ -173,7 +160,7 @@ class DefaultValidator(Validator):
 
 enamldef DefaultEditor(Field): 
     attr minfo
-    validator = DefaultValidator(model=minfo.model, name=minfo.name)
+    validator = DefaultValidator(minfo=minfo)
     text << str(getattr(minfo.model, minfo.name))
     text ::
         model, name = minfo.model, minfo.name
