@@ -6,21 +6,18 @@
 # LICENSE.txt
 #
 import enaml
+from utils import MInfo, _Partial
 
 with enaml.imports():
     from auto_editors import AutoItem, _AutoView, _AutoWindow
 
 
-class _Partial(object):
-    def __init__(self, name, **kwargs):
-        self.name = name
-        self.kwargs = kwargs
-
-
-def auto_item(model, name=None, **kwargs):
-    if not name:
-        return _Partial(model, **kwargs)
-    return AutoItem(model_name=(model, name), **kwargs)
+def auto_item(info,  **kwargs):
+    if isinstance(info, str):
+        return _Partial(info, **kwargs)
+    if not isinstance(info, MInfo):
+        raise TypeError('"info" must be a str or an MInfo object')
+    return AutoItem(minfo=info, **kwargs)
 
 
 def auto_view(model, *objects, **kwargs):
@@ -29,9 +26,10 @@ def auto_view(model, *objects, **kwargs):
     objects = list(objects)
     for (ind, obj) in enumerate(objects):
         if isinstance(obj, str):
-            objects[ind] = auto_item(model, obj)
-        if isinstance(obj, _Partial):
-            objects[ind] = auto_item(model, obj.name, **obj.kwargs)
+            objects[ind] = auto_item(MInfo(model, obj))
+        elif isinstance(obj, _Partial):
+            minfo = MInfo(model, obj.name)
+            objects[ind] = auto_item(minfo, **obj.kwargs)
     return _AutoView(objects=objects, **kwargs)
 
 

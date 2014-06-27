@@ -20,49 +20,32 @@ from enaml.validator import Validator, Bool
 from atom.api import Bool, Str, Value    
 from atom.api import (Bool, Enum, Float, Int, Range, Unicode, Str,
                       FloatRange, Long)
+from utils import MInfo, _Partial
 
 
-AtomDesc = namedtuple('AtomDesc', 'name member label')
+def _get_editor(model, name):
+    minfo = MInfo(model, name)
+    factory = ATOM2ENAML.get(type(minfo.member), ATOM2ENAML[DefaultEditor])
+    editor = factory(minfo.member)
+    return editor(minfo=minfo)
 
 
-def _get_editor(model, atom_desc):
-    kwargs = {'model': model, 'atom_desc': atom_desc}
-    member = atom_desc.member
-    factory = ATOM2ENAML.get(type(member), ATOM2ENAML[DefaultEditor])
-    editor = factory(member)
-    return editor(**kwargs)
-
-
-def _model_attrs(model, names=None):
-    attrs = []
-    members = model.members()
-    if not names:
-        names = [
-            name for name in sorted(members.keys())
-            if not name.startswith('_')]
-    for name in names:
-        attr = members[name]
-        label = capwords(name.replace('_', ' '))
-        desc = AtomDesc(name, attr, label)
-        attrs.append(desc)
-    return attrs
-
-
-def update_widget(widget, model_name):
-    if not isinstance(model_name, tuple) or not len(model_name) == 2:
-        raise ValueError('"model_name" attr of an AutoItem must be a (Atom, str) tuple')
-    model, name = model_name
-    widget.label.text = capwords(name.replace('_', ' '))
-    desc = _model_attrs(model, [name])[0]
-    widget.editor = _get_editor(model, desc)
+def update_widget(widget, minfo):
+    if not isinstance(minfo, MInfo):
+        if isinstance(minfo, tuple) and len(minfo) == 2:
+            widget.minfo = minfo = MInfo(model=minfo[0], name=minfo[1])
+        else:
+            raise TypeError("minfo must be of type MInfo or a tuple of (model, name)")
+    widget.label.text = capwords(minfo.name.replace('_', ' '))
+    widget.editor = _get_editor(minfo.model, minfo.name)
     for w in [widget.label, widget.editor]:
         w.tool_tip = widget.tool_tip
         w.status_tip = widget.status_tip
         w.font = widget.font
 
 
-enamldef AutoItem(Form): item:
-    attr model_name = (None, '')
+enamldef AutoItem(Form): _item:
+    attr minfo
     attr editor = Field()
     attr centerline = 0.3
     padding = 0
@@ -70,27 +53,45 @@ enamldef AutoItem(Form): item:
     alias label: lbl
     Label: lbl: pass
     Include: inc: objects << [editor]
-    initialized :: update_widget(item, model_name)
-    model_name :: update_widget(item, model_name)
+    initialized :: update_widget(_item, minfo)
+    minfo :: update_widget(_item, minfo)
+
+
+def _set_auto_view(model, mitems, centerline):
+    items = []
+    if mitems is None:
+        mitems = [m for m in model.members() if not m.startswith('_')]
+        mitems = sorted(mitems)
+    for mitem in mitems:
+        if isinstance(mitem, str):
+            items.append(AutoItem(minfo=MInfo(model, mitem), 
+                                  centerline=centerline))
+        elif isinstance(mitem, _Partial):
+            minfo = MInfo(model, mitem.name)
+            items.append(AutoItem(minfo=minfo, centerline=centerline,
+                                  **mitem.kwargs))
+        else:
+            items.append(mitem)
+    return items
 
 
 enamldef AutoView(Container):
-    attr model_names
+    attr model
+    attr mitems
     attr centerline = 0.3
     padding = 5
     alias objects: inc.objects
-    Include: inc: objects << [AutoItem(model_name=(model_names[0], i), 
-                                        centerline=centerline) 
-                               for i in model_names[1]]
+    Include: inc: 
+        objects << _set_auto_view(model, mitems, centerline)
 
 
 enamldef AutoWindow(Window): _win:
     attr model
     title = "Edit Properties"
     Include:
-        objects << [(AutoItem((model, name)) 
-                     for name in sorted(model.members.keys()) 
-                     if not name.startswith('_'))]
+        objects << [AutoItem(MInfo(model, name)) 
+                    for name in sorted(model.members.keys()) 
+                    if not name.startswith('_')]
 
 
 enamldef _AutoView(Container): _view:
@@ -108,54 +109,47 @@ enamldef _AutoWindow(Window): _win:
 
 
 enamldef BoolEditor(CheckBox):
-    attr model
-    attr atom_desc
-    checked := getattr(model, atom_desc.name)
+    attr minfo
+    checked := getattr(minfo.model, minfo.name)
 
 
 enamldef EnumEditor(ComboBox):
-    attr model
-    attr atom_desc
-    index << atom_desc.member.validate_mode[1].index(getattr(model, atom_desc.name))
+    attr minfo
+    index << minfo.validator.index(getattr(minfo.model, minfo.name))
     index ::
-        item_value = atom_desc.member.validate_mode[1][self.index]
-        setattr(model, atom_desc.name, item_value)
-    items = list(atom_desc.member.validate_mode[1])
+        item_value = minfo.validator[self.index]
+        setattr(minfo.model, minfo.name, item_value)
+    items = list(minfo.validator)
 
 
 enamldef FloatEditor(FloatField):
-    attr model
-    attr atom_desc
-    value := getattr(model, atom_desc.name)
+    attr minfo
+    value := getattr(minfo.model, minfo.name)
 
 
 enamldef FloatRangeEditor(FloatField):
-    attr model
-    attr atom_desc
-    value := getattr(model, atom_desc.name)
-    minimum = atom_desc.member.validate_mode[1][0]
-    maximum = atom_desc.member.validate_mode[1][1]
+    attr minfo
+    value := getattr(minfo.model, minfo.name)
+    minimum = minfo.validator[0]
+    maximum = minfo.validator[1]
 
 
 enamldef IntEditor(IntField):
-    attr model
-    attr atom_desc
-    value << int(getattr(model, atom_desc.name))
-    value :: setattr(model, atom_desc.name, int(value))
+    attr minfo
+    value << int(getattr(minfo.model, minfo.name))
+    value :: setattr(minfo.model, minfo.name, int(value))
 
 
 enamldef IntRangeEditor(SpinBox):
-    attr model
-    attr atom_desc
-    value := getattr(model, atom_desc.name)
-    minimum = atom_desc.member.validate_mode[1][0]
-    maximum = atom_desc.member.validate_mode[1][1]
+    attr minfo
+    value := getattr(minfo.model, minfo.name)
+    minimum = minfo.validator[0]
+    maximum = minfo.validator[1]
 
 
 enamldef StrEditor(Field):
-    attr model
-    attr atom_desc
-    text := getattr(model, atom_desc.name)
+    attr minfo
+    text := getattr(minfo.model, minfo.name)
 
 
 class DefaultValidator(Validator):
@@ -178,12 +172,11 @@ class DefaultValidator(Validator):
 
 
 enamldef DefaultEditor(Field): 
-    attr model
-    attr atom_desc
-    validator = DefaultValidator(model=model, name=atom_desc.name)
-    text << str(getattr(model, atom_desc.name))
+    attr minfo
+    validator = DefaultValidator(model=minfo.model, name=minfo.name)
+    text << str(getattr(minfo.model, minfo.name))
     text ::
-        name = atom_desc.name
+        model, name = minfo.model, minfo.name
         attr = getattr(model, name)
         if isinstance(attr, str):
             setattr(model, name, text)

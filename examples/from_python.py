@@ -27,7 +27,7 @@ class AllTypes(Atom):
     enum_value = Enum("foo", "bar", "baz", "qux")
     int_range_value = Range(0, 10)
     long_value = Long(10)
-    float_range_value = FloatRange(0.0, 1.0)
+    float_range_value = FloatRange(0.0, 1.0, value=.5)
     uni_value = Unicode("Word")
     str_value = Str("Hello")
     coerced_value = Coerced(int)
@@ -39,6 +39,8 @@ class AllTypes(Atom):
 
     @observe('boolean_value', 'int_value', 'float_value', 'enum_value')
     def something_changed(self, change):
+        if change['type'] == 'create':
+            return
         print change
         self.float_range_value *= 0.9
 
@@ -46,9 +48,11 @@ class AllTypes(Atom):
 if __name__ == '__main__':
     all = AllTypes()
     app = QtApplication()
-    view = auto_view(all, 
+    view = auto_view(all,
                      'boolean_value',
-                     auto_item('uni_value', tool_tip='Hey There'))
+                     'str_value',
+                     auto_item('uni_value', tool_tip='Hey There'),
+                     auto_item('tuple_value', background='green'))
     win = auto_window(view)
     win.show()
 
