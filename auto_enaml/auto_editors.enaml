@@ -79,9 +79,9 @@ enamldef AutoView(Container):
     attr centerline = 0.3
     padding = 5
     alias objects: inc.objects
-    Include: inc: objects << [(AutoItem(model_name=(model_names[0], i), 
+    Include: inc: objects << [AutoItem(model_name=(model_names[0], i), 
                                         centerline=centerline) 
-                               for i in model_names[1])]
+                               for i in model_names[1]]
 
 
 enamldef AutoWindow(Window): _win:
