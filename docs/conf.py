@@ -283,7 +283,7 @@ numpydoc_show_class_members = False
 _python_doc_base = 'http://docs.python.org/2.7'
 intersphinx_mapping = {
     _python_doc_base: None,
-    'enaml' : ('https://github.com/nucleic/enaml/', None)
+    'enaml' : ('https://github.com/nucleic/enaml/', None),
     'atom' : ('https://github.com/nucleic/atom/', None)
 }
 
