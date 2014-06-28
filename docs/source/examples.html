@@ -155,6 +155,55 @@
 <h2>From Python<a class="headerlink" href="#from-python" title="Permalink to this headline">¶</a></h2>
 <p>Example demonstrating creating a view from Python.</p>
 <p>Here is the Python file (<a class="reference download internal" href="../_downloads/from_python.py"><tt class="xref download docutils literal"><span class="pre">download</span> <span class="pre">here</span></tt></a>):</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">enaml.qt.qt_application</span> <span class="kn">import</span> <span class="n">QtApplication</span>
+<span class="kn">from</span> <span class="nn">atom.api</span> <span class="kn">import</span> <span class="p">(</span><span class="n">Atom</span><span class="p">,</span> <span class="n">Bool</span><span class="p">,</span> <span class="n">Enum</span><span class="p">,</span> <span class="n">Float</span><span class="p">,</span> <span class="n">Int</span><span class="p">,</span> <span class="n">Str</span><span class="p">,</span> <span class="n">Long</span><span class="p">,</span> <span class="n">Coerced</span><span class="p">,</span>
+                      <span class="n">Range</span><span class="p">,</span> <span class="n">Unicode</span><span class="p">,</span> <span class="n">FloatRange</span><span class="p">,</span> <span class="n">observe</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">)</span>
+<span class="kn">from</span> <span class="nn">auto_enaml</span> <span class="kn">import</span> <span class="n">auto_window</span><span class="p">,</span> <span class="n">auto_view</span><span class="p">,</span> <span class="n">auto_item</span>
+
+
+<span class="k">class</span> <span class="nc">AllTypes</span><span class="p">(</span><span class="n">Atom</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; A simple class with all kinds of traits</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">boolean_value</span> <span class="o">=</span> <span class="n">Bool</span><span class="p">(</span><span class="bp">True</span><span class="p">)</span>
+    <span class="n">int_value</span> <span class="o">=</span> <span class="n">Int</span><span class="p">(</span><span class="mi">42</span><span class="p">)</span>
+    <span class="n">float_value</span> <span class="o">=</span> <span class="n">Float</span><span class="p">(</span><span class="mf">3.141592</span><span class="p">)</span>
+    <span class="n">enum_value</span> <span class="o">=</span> <span class="n">Enum</span><span class="p">(</span><span class="s">&quot;foo&quot;</span><span class="p">,</span> <span class="s">&quot;bar&quot;</span><span class="p">,</span> <span class="s">&quot;baz&quot;</span><span class="p">,</span> <span class="s">&quot;qux&quot;</span><span class="p">)</span>
+    <span class="n">int_range_value</span> <span class="o">=</span> <span class="n">Range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
+    <span class="n">long_value</span> <span class="o">=</span> <span class="n">Long</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
+    <span class="n">float_range_value</span> <span class="o">=</span> <span class="n">FloatRange</span><span class="p">(</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="n">value</span><span class="o">=.</span><span class="mi">5</span><span class="p">)</span>
+    <span class="n">uni_value</span> <span class="o">=</span> <span class="n">Unicode</span><span class="p">(</span><span class="s">&quot;Word&quot;</span><span class="p">)</span>
+    <span class="n">str_value</span> <span class="o">=</span> <span class="n">Str</span><span class="p">(</span><span class="s">&quot;Hello&quot;</span><span class="p">)</span>
+    <span class="n">coerced_value</span> <span class="o">=</span> <span class="n">Coerced</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
+    <span class="n">list_value</span> <span class="o">=</span> <span class="n">List</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">])</span>
+    <span class="n">dict_value</span> <span class="o">=</span> <span class="n">Dict</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">a</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">b</span><span class="o">=</span><span class="mi">2</span><span class="p">))</span>
+    <span class="n">tuple_value</span> <span class="o">=</span> <span class="n">Tuple</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
+
+    <span class="n">_my_float</span> <span class="o">=</span> <span class="n">Float</span><span class="p">()</span>
+
+    <span class="nd">@observe</span><span class="p">(</span><span class="s">&#39;boolean_value&#39;</span><span class="p">,</span> <span class="s">&#39;int_value&#39;</span><span class="p">,</span> <span class="s">&#39;float_value&#39;</span><span class="p">,</span> <span class="s">&#39;enum_value&#39;</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">something_changed</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">change</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">change</span><span class="p">[</span><span class="s">&#39;type&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="s">&#39;create&#39;</span><span class="p">:</span>
+            <span class="k">return</span>
+        <span class="k">print</span> <span class="n">change</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">float_range_value</span> <span class="o">*=</span> <span class="mf">0.9</span>
+
+
+<span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s">&#39;__main__&#39;</span><span class="p">:</span>
+    <span class="n">all_types</span> <span class="o">=</span> <span class="n">AllTypes</span><span class="p">()</span>
+    <span class="n">app</span> <span class="o">=</span> <span class="n">QtApplication</span><span class="p">()</span>
+    <span class="n">view</span> <span class="o">=</span> <span class="n">auto_view</span><span class="p">(</span><span class="n">all_types</span><span class="p">,</span>
+                     <span class="s">&#39;boolean_value&#39;</span><span class="p">,</span>
+                     <span class="s">&#39;str_value&#39;</span><span class="p">,</span>
+                     <span class="n">auto_item</span><span class="p">(</span><span class="s">&#39;uni_value&#39;</span><span class="p">,</span> <span class="n">tool_tip</span><span class="o">=</span><span class="s">&#39;Hey There&#39;</span><span class="p">),</span>
+                     <span class="n">auto_item</span><span class="p">(</span><span class="s">&#39;tuple_value&#39;</span><span class="p">,</span> <span class="n">background</span><span class="o">=</span><span class="s">&#39;green&#39;</span><span class="p">,</span>
+                               <span class="n">label_tool_tip</span><span class="o">=</span><span class="s">&#39;My Label&#39;</span><span class="p">),)</span>
+    <span class="n">win</span> <span class="o">=</span> <span class="n">auto_window</span><span class="p">(</span><span class="n">view</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s">&#39;Auto Enaml Demo&#39;</span><span class="p">)</span>
+    <span class="n">win</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+
+    <span class="n">app</span><span class="o">.</span><span class="n">start</span><span class="p">()</span>
+</pre></div>
+</div>
 <img alt="../_images/from_python.png" src="../_images/from_python.png" />
 </div>
 <div class="section" id="from-enaml">
