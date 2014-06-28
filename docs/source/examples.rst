@@ -10,7 +10,7 @@ Example demonstrating creating a view from Python.
 Here is the Python file (:download:`download here
 <../../examples/from_python.py>`):
 
-.. literalinclude:: ../../examples/tutorial/from_python.py
+.. literalinclude:: ../../examples/from_python.py
     :language: python
 
 .. image:: static/from_python.png
