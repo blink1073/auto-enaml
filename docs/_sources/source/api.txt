@@ -2,10 +2,10 @@
 API Reference
 ********************
 
+.. module:: auto_enaml.__init__
+
 Auto-Enaml Python
 =================
-
-.. module:: auto_enaml
 
 .. autofunction:: auto_item
 
@@ -16,7 +16,6 @@ Auto-Enaml Python
 
 Auto-Enaml Enaml
 ================
-.. module:: auto_enaml
 
 .. autoclass:: AutoItem
 
