@@ -1,6 +1,5 @@
 
 .. include:: ../README.rst
-   :end-before:  Installation
    
 .. toctree::
    :hidden:
@@ -9,7 +8,6 @@
    source/installation
    source/examples
    source/api
-   source/info
 
 `API Reference <source/api.html>`_
 ------------------------------------------------

@@ -17,8 +17,8 @@ def auto_item(info,  **kwargs):
         must be used.
     kwargs : dictionary
         Keyword arguments to pass to the widgets.  Label-specific
-        properties can be set by using a "label_" prefix
-        (e.g. label_tooltip).  The same is true for the editor.
+        properties can be set by using a prefix (e.g. label_tooltip).
+        The same is true for the editor.
 
     Returns
     -------
