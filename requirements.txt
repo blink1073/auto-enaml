@@ -1,4 +1,0 @@
-ply
-enaml
-atom
-kiwisolver
