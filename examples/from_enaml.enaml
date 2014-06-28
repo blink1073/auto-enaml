@@ -46,7 +46,8 @@ enamldef Main(MainWindow): main:
         AutoView:
             model = main.model
             mitems = ['boolean_value', 'int_value', 'enum_value',
-                      auto_item('long_value', tool_tip='My Long Value')]
+                      auto_item('long_value', tool_tip='My Long Value'),
+                      auto_item('tuple_value', label_background='yellow')]
             initialized :: 
                 objects[0].label.text = '********'
                 objects[1].editor.tool_tip = 'Hey there'

@@ -1,5 +1,5 @@
 
-class _MInfo(object):
+class MInfo(object):
 
     __slots__ = ('model', 'name')
 
@@ -20,7 +20,7 @@ class _MInfo(object):
         return getattr(self.model, self.name)
 
 
-class _Partial(object):
+class Partial(object):
 
     __slots__ = ('name', 'kwargs')
 

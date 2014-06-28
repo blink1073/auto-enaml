@@ -40,7 +40,8 @@ if __name__ == '__main__':
                      'boolean_value',
                      'str_value',
                      auto_item('uni_value', tool_tip='Hey There'),
-                     auto_item('tuple_value', background='green'),)
+                     auto_item('tuple_value', background='green',
+                               label_tool_tip='My Label'),)
     win = auto_window(view, title='Auto Enaml Demo')
     win.show()
 

@@ -9,11 +9,11 @@ from enaml.widgets.api import (
 from enaml.validator import Validator  
 from atom.api import (Bool, Enum, Float, Int, Range, Unicode, Str,
                       FloatRange, Long, Value)
-from utils import _MInfo, _Partial
+from utils import MInfo, Partial
 
 
 def _get_editor(model, name):   
-    minfo = _MInfo(model, name)
+    minfo = MInfo(model, name)
     factory = ATOM2ENAML.get(type(minfo.member), ATOM2ENAML[DefaultEditor])
     editor = factory(minfo.member)
     return editor(minfo=minfo)
@@ -22,8 +22,8 @@ def _get_editor(model, name):
 def _check_minfo(parent):
     minfo = parent.minfo
     if isinstance(minfo, tuple) and len(minfo) == 2:
-        parent.minfo = minfo = _MInfo(model=minfo[0], name=minfo[1])
-    if not isinstance(minfo, _MInfo):
+        parent.minfo = minfo = MInfo(model=minfo[0], name=minfo[1])
+    if not isinstance(minfo, MInfo):
         raise TypeError("minfo must be a tuple of (model, name)")
 
 
@@ -53,18 +53,17 @@ enamldef AutoItem(Form): _item:
 
 
 def _set_auto_view(model, mitems, centerline):
+    from auto_view import auto_item  # avoid circular import
     items = []
     if mitems is None:
         mitems = [m for m in model.members() if not m.startswith('_')]
         mitems = sorted(mitems)
     for mitem in mitems:
         if isinstance(mitem, str):
-            items.append(AutoItem(minfo=(model, mitem), 
-                                  centerline=centerline))
-        elif isinstance(mitem, _Partial):
-            items.append(AutoItem(minfo=(model, mitem.name), 
-                                  centerline=centerline,
-                                  **mitem.kwargs))
+            items.append(auto_item((model, mitem), centerline=centerline))
+        elif isinstance(mitem, Partial):
+            mitem.kwargs['centerline'] = centerline
+            items.append(auto_item((model, mitem.name), **mitem.kwargs))
         else:
             items.append(mitem)
     return items
@@ -89,13 +88,13 @@ enamldef AutoWindow(Window): _win:
                     if not name.startswith('_')]
 
 
-enamldef _AutoView(Container): _view:
+enamldef PyAutoView(Container): _view:
     attr objects
     padding = 5
     Include: objects << _view.objects
 
 
-enamldef _AutoWindow(Window): _win:
+enamldef PyAutoWindow(Window): _win:
     attr view
     title = "Edit Properties"
     Include: objects << [_win.view]
