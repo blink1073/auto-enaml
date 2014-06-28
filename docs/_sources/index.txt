@@ -14,12 +14,12 @@
 `API Reference <source/api.html>`_
 ------------------------------------------------
 
-Documentation for the functions included in Oct2Py.
+Documentation for the functions included in Auto-Enaml.
 
 `Installation <source/installation.html>`_
 ------------------------------------------------
 
-How to install Oct2Py.
+How to install Auto-Enaml.
 
 
 `Examples <source/examples.html>`_

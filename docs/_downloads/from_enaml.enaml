@@ -1,0 +1,60 @@
+
+from auto_enaml import AutoItem, AutoView, auto_item
+from enaml.widgets.api import MainWindow, Container, Form
+from enaml.core.include import Include
+from atom.api import (Atom, Bool, Enum, Float, Int, Str, Long, Coerced,
+                      Range, Unicode, FloatRange, observe, List, Dict, Tuple)
+
+
+class AllTypes(Atom):
+    """ A simple class with all kinds of traits
+
+    """
+    boolean_value = Bool(True)
+    int_value = Int(42)
+    float_value = Float(3.141592)
+    enum_value = Enum("foo", "bar", "baz", "qux")
+    int_range_value = Range(0, 10)
+    long_value = Long(10)
+    float_range_value = FloatRange(0.0, 1.0, value=0.5)
+    uni_value = Unicode("Word")
+    str_value = Str("Hello")
+    coerced_value = Coerced(int)
+    list_value = List(default=[1, 3, 4])
+    dict_value = Dict(default=dict(a=1, b=2))
+    tuple_value = Tuple(default=(1, 2, 3))
+
+    _my_float = Float()
+
+    @observe('boolean_value', 'int_value', 'float_value', 'enum_value')
+    def something_changed(self, change):
+        if change['type'] == 'create':
+                return
+        print change
+        self.float_range_value *= 0.9
+
+
+enamldef Main(MainWindow): main:
+    attr model = AllTypes()
+    title = 'Auto Enaml Demo'
+    Container:
+        AutoItem: minfo = (model, 'boolean_value')
+        AutoItem: minfo = (model, 'int_value')
+        AutoItem: 
+            minfo = (model, 'enum_value')
+            background = 'blue'
+        AutoView:
+            model = main.model
+            mitems = ['boolean_value', 'int_value', 'enum_value',
+                      auto_item('long_value', tool_tip='My Long Value'),
+                      auto_item('tuple_value', label_background='yellow')]
+            initialized :: 
+                objects[0].label.text = '********'
+                objects[1].editor.tool_tip = 'Hey there'
+        AutoView:
+            model = main.model
+            initialized ::
+                for o in objects:
+                    o.label.tool_tip = str(o)
+
+

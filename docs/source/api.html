@@ -86,8 +86,8 @@
       role="menu"
       aria-labelledby="dLabelLocalToc"><ul>
 <li><a class="reference internal" href="#">API Reference</a><ul>
-<li><a class="reference internal" href="#module-auto_enaml.auto_view">Auto-Enaml Python</a></li>
-<li><a class="reference internal" href="#module-auto_enaml.auto_editors">Auto-Enaml Enaml</a></li>
+<li><a class="reference internal" href="#module-auto_enaml">Auto-Enaml Python</a></li>
+<li><a class="reference internal" href="#module-auto_enaml">Auto-Enaml Enaml</a></li>
 </ul>
 </li>
 </ul>
@@ -134,8 +134,8 @@
       <div class="col-md-3">
         <div id="sidebar" class="bs-sidenav" role="complementary"><ul>
 <li><a class="reference internal" href="#">API Reference</a><ul>
-<li><a class="reference internal" href="#module-auto_enaml.auto_view">Auto-Enaml Python</a></li>
-<li><a class="reference internal" href="#module-auto_enaml.auto_editors">Auto-Enaml Enaml</a></li>
+<li><a class="reference internal" href="#module-auto_enaml">Auto-Enaml Python</a></li>
+<li><a class="reference internal" href="#module-auto_enaml">Auto-Enaml Enaml</a></li>
 </ul>
 </li>
 </ul>
@@ -146,11 +146,100 @@
       
   <div class="section" id="api-reference">
 <h1>API Reference<a class="headerlink" href="#api-reference" title="Permalink to this headline">¶</a></h1>
-<div class="section" id="module-auto_enaml.auto_view">
-<span id="auto-enaml-python"></span><h2>Auto-Enaml Python<a class="headerlink" href="#module-auto_enaml.auto_view" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="module-auto_enaml">
+<span id="auto-enaml-python"></span><h2>Auto-Enaml Python<a class="headerlink" href="#module-auto_enaml" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="auto_enaml.auto_item">
+<tt class="descclassname">auto_enaml.</tt><tt class="descname">auto_item</tt><big>(</big><em>info</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#auto_enaml.auto_item" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="function">
+<dt id="auto_enaml.auto_view">
+<tt class="descclassname">auto_enaml.</tt><tt class="descname">auto_view</tt><big>(</big><em>model</em>, <em>*objects</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#auto_enaml.auto_view" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generate a view directly from an <cite>Atom</cite> instance.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="auto_enaml.auto_window">
+<tt class="descclassname">auto_enaml.</tt><tt class="descname">auto_window</tt><big>(</big><em>model</em>, <em>*objects</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#auto_enaml.auto_window" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generate a window directly from an <cite>Atom</cite> instance.</p>
+</dd></dl>
+
 </div>
-<div class="section" id="module-auto_enaml.auto_editors">
-<span id="auto-enaml-enaml"></span><h2>Auto-Enaml Enaml<a class="headerlink" href="#module-auto_enaml.auto_editors" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="module-auto_enaml">
+<span id="auto-enaml-enaml"></span><h2>Auto-Enaml Enaml<a class="headerlink" href="#module-auto_enaml" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="auto_enaml.AutoItem">
+<em class="property">class </em><tt class="descclassname">auto_enaml.</tt><tt class="descname">AutoItem</tt><big>(</big><em>parent=None</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#auto_enaml.AutoItem" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initialize an Object.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>parent</strong> : Object or None, optional</p>
+<blockquote>
+<div><p>The Object instance which is the parent of this object, or
+None if the object has no parent. Defaults to None.</p>
+</div></blockquote>
+<p><strong>**kwargs</strong></p>
+<blockquote class="last">
+<div><p>Additional keyword arguments to apply as attributes to the
+object.</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="class">
+<dt id="auto_enaml.AutoView">
+<em class="property">class </em><tt class="descclassname">auto_enaml.</tt><tt class="descname">AutoView</tt><big>(</big><em>parent=None</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#auto_enaml.AutoView" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initialize an Object.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>parent</strong> : Object or None, optional</p>
+<blockquote>
+<div><p>The Object instance which is the parent of this object, or
+None if the object has no parent. Defaults to None.</p>
+</div></blockquote>
+<p><strong>**kwargs</strong></p>
+<blockquote class="last">
+<div><p>Additional keyword arguments to apply as attributes to the
+object.</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="class">
+<dt id="auto_enaml.AutoWindow">
+<em class="property">class </em><tt class="descclassname">auto_enaml.</tt><tt class="descname">AutoWindow</tt><big>(</big><em>parent=None</em>, <em>**kwargs</em><big>)</big><a class="headerlink" href="#auto_enaml.AutoWindow" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initialize an Object.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>parent</strong> : Object or None, optional</p>
+<blockquote>
+<div><p>The Object instance which is the parent of this object, or
+None if the object has no parent. Defaults to None.</p>
+</div></blockquote>
+<p><strong>**kwargs</strong></p>
+<blockquote class="last">
+<div><p>Additional keyword arguments to apply as attributes to the
+object.</p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
 </div>
 </div>
 

@@ -4,8 +4,22 @@ API Reference
 
 Auto-Enaml Python
 =================
-.. automodule:: auto_enaml.auto_view
+
+.. module:: auto_enaml
+
+.. autofunction:: auto_item
+
+.. autofunction:: auto_view
+
+.. autofunction:: auto_window
+
 
 Auto-Enaml Enaml
 ================
-.. automodule:: auto_enaml.auto_editors
+.. module:: auto_enaml
+
+.. autoclass:: AutoItem
+
+.. autoclass:: AutoView
+
+.. autoclass:: AutoWindow
