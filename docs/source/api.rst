@@ -2,10 +2,17 @@
 API Reference
 ********************
 
-.. module:: auto_enaml.__init__
+.. automodule:: auto_enaml.api
 
 Auto-Enaml Python
 =================
+
+.. autosummary::
+    :nosignatures:
+
+    auto_item
+    auto_view
+    auto_window
 
 .. autofunction:: auto_item
 
@@ -16,6 +23,16 @@ Auto-Enaml Python
 
 Auto-Enaml Enaml
 ================
+
+.. rubric:: Classes
+
+.. autosummary::
+    :nosignatures:
+
+    AutoItem
+    AutoView
+    AutoWindow
+
 
 .. autoclass:: AutoItem
 

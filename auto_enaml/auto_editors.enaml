@@ -39,6 +39,20 @@ def _update_item(item):
 
 
 enamldef AutoItem(Form): _item:
+    """ Generate a label-editor combo for an Atom member.
+
+    Parameters
+    ----------
+    minfo : tuple of (atom_instance, string) 
+        A tuple with the atom_instance and the name of the member.
+
+    editor : Enaml instance, optional
+        Optional editor to use.
+
+    centerline : float, optional
+        The fractional width given to the label (default=0.3)
+
+    """
     attr minfo
     attr editor = Field()
     attr centerline = 0.3
@@ -70,6 +84,20 @@ def _set_auto_view(model, mitems, centerline):
 
 
 enamldef AutoView(Container):
+    """ Generate a set label-editor combos for an Atom.
+
+    Parameters
+    ----------
+    model : atom instance
+
+    mitems :  str or auto_items
+        Arguments used to build the auto_item editors.  Can be a name
+        of a member (string), or an auto_item.
+
+    centerline : float, optional
+        The fractional width given to the labels (default=0.3)
+
+    """
     attr model
     attr mitems
     attr centerline = 0.3
@@ -80,10 +108,20 @@ enamldef AutoView(Container):
 
 
 enamldef AutoWindow(Window): _win:
+    """ Generate an automatic view for an Atom and display in a window.
+
+    Parameters
+    ----------
+    model : atom instance
+
+    centerline : float, optional
+        The fractional width given to the labels (default=0.3)
+    """
     attr model
+    attr centerline = 0.3
     title = "Edit Properties"
     Include:
-        objects << [AutoItem((model, name)) 
+        objects << [AutoItem((model, name), centerline=centerline) 
                     for name in sorted(model.members.keys()) 
                     if not name.startswith('_')]
 

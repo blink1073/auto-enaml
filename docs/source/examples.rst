@@ -13,7 +13,7 @@ Here is the Python file (:download:`download here
 .. literalinclude:: ../../examples/from_python.py
     :language: python
 
-.. image:: static/from_python.png
+.. image:: _static/from_python.png
 
 
 From Enaml
@@ -28,4 +28,4 @@ Here is the Enaml file (:download:`download here
 .. literalinclude:: ../../examples/from_enaml.enaml
     :language: python
 
-.. image:: static/from_enaml.png
+.. image:: _static/from_enaml.png

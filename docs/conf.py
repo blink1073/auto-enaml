@@ -13,6 +13,16 @@
 
 import sys, os, datetime
 
+from enaml.core.import_hooks import EnamlImporter
+EnamlImporter.install()
+
+# If extensions (or modules to document with autodoc) are in another directory,
+# add these directories to sys.path here. If the directory is relative to the
+# documentation root, use os.path.abspath to make it absolute, like shown here.
+sys.path.insert(0, os.path.abspath('.'))
+sys.path.insert(0, os.path.abspath('./_sphinxext'))
+sys.path.insert(0, os.path.abspath('../'))
+
 # If extensions (or modules to document with autodoc) are in another directory,
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
@@ -25,7 +35,8 @@ import sys, os, datetime
 # Add any Sphinx extension module names here, as strings. They can be extensions
 # coming with Sphinx (named 'sphinx.ext.*') or your custom ones.
 extensions = ['sphinx.ext.autodoc', 'sphinx.ext.viewcode', 'sphinx.ext.todo',
-              'sphinx.ext.intersphinx', 'sphinx.ext.inheritance_diagram',
+              'sphinx.ext.intersphinx', #'sphinx.ext.inheritance_diagram',
+              'sphinx.ext.autosummary',
               'numpydoc']
 
 # Add any paths that contain templates here, relative to this directory.
@@ -68,7 +79,7 @@ release = auto_enaml.__version__
 
 # List of patterns, relative to source directory, that match files and
 # directories to ignore when looking for source files.
-exclude_patterns = []
+exclude_patterns = ['_sphinxext']
 
 # The reST default role (used for this markup: `text`) to use for all documents.
 #default_role = None
@@ -132,7 +143,7 @@ html_theme_path =  sphinx_bootstrap_theme.get_html_theme_path()
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
 # so a file named "default.css" will overwrite the builtin "default.css".
-html_static_path = ['_static']
+html_static_path = ['source/_static']
 
 # If not '', a 'Last updated on:' timestamp is inserted at every page bottom,
 # using the given strftime format.
@@ -280,10 +291,7 @@ numpydoc_show_class_members = False
 # -----------------------------------------------------------------------------
 # intersphinx
 # -----------------------------------------------------------------------------
-_python_doc_base = 'http://docs.python.org/2.7'
 intersphinx_mapping = {
-    _python_doc_base: None,
-    'enaml' : ('https://github.com/nucleic/enaml/', None),
-    'atom' : ('https://github.com/nucleic/atom/', None)
+    'python' : ('http://docs.python.org/', None),
 }
 
