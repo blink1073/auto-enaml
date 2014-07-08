@@ -1,8 +1,10 @@
 
 from enaml.qt.qt_application import QtApplication
 from atom.api import (Atom, Bool, Enum, Float, Int, Str, Long, Coerced,
-                      Range, Unicode, FloatRange, observe, List, Dict, Tuple)
-from auto_enaml import auto_window, auto_view, auto_item
+                      Range, Unicode, FloatRange, observe, List, Dict, Tuple,
+                      Typed)
+from matplotlib.figure import Figure 
+from auto_enaml.api import auto_window, auto_view, auto_item
 
 
 class AllTypes(Atom):
@@ -22,6 +24,7 @@ class AllTypes(Atom):
     list_value = List(default=[1, 3, 4])
     dict_value = Dict(default=dict(a=1, b=2))
     tuple_value = Tuple(default=(1, 2, 3))
+    figure = Typed(Figure)
 
     _my_float = Float()
 
@@ -31,6 +34,12 @@ class AllTypes(Atom):
             return
         print change
         self.float_range_value *= 0.9
+
+    def _default_figure(self):
+        fig = Figure()
+        ax = fig.subplot(111)
+        ax.plot([1,2,3])
+        fig.tight_layout()
 
 
 if __name__ == '__main__':

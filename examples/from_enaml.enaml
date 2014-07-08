@@ -1,10 +1,11 @@
 
-from auto_enaml import AutoItem, AutoView, auto_item
+from auto_enaml.api import AutoItem, AutoView, auto_item
 from enaml.widgets.api import MainWindow, Container, Form
 from enaml.core.include import Include
 from atom.api import (Atom, Bool, Enum, Float, Int, Str, Long, Coerced,
-                      Range, Unicode, FloatRange, observe, List, Dict, Tuple)
-
+                      Range, Unicode, FloatRange, observe, List, Dict, Tuple,
+                      Typed)
+from matplotlib.figure import Figure
 
 class AllTypes(Atom):
     """ A simple class with all kinds of traits
@@ -24,14 +25,24 @@ class AllTypes(Atom):
     dict_value = Dict(default=dict(a=1, b=2))
     tuple_value = Tuple(default=(1, 2, 3))
 
+    figure = Typed(Figure)
+
     _my_float = Float()
 
     @observe('boolean_value', 'int_value', 'float_value', 'enum_value')
     def something_changed(self, change):
         if change['type'] == 'create':
-                return
+            return
         print change
         self.float_range_value *= 0.9
+
+    def _default_figure(self):
+        fig = Figure()
+        ax = fig.add_subplot(111)
+        ax.plot([1,2,3])
+        fig.tight_layout()
+        return fig
+
 
 
 enamldef Main(MainWindow): main:
