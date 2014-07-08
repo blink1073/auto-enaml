@@ -10,11 +10,16 @@ from enaml.validator import Validator
 from atom.api import (Bool, Enum, Float, Int, Range, Unicode, Str,
                       FloatRange, Long, Value)
 from utils import MInfo, Partial
+import enaml.widgets.api as widgets
 
 
 def _get_editor(model, name):   
     minfo = MInfo(model, name)
     factory = ATOM2ENAML.get(type(minfo.member), ATOM2ENAML[DefaultEditor])
+    if factory == ATOM2ENAML[DefaultEditor]:
+        val = getattr(model, name)
+        if hasattr(val, 'tight_layout'):
+            return widgets.MPLCanvas(figure=val)
     editor = factory(minfo.member)
     return editor(minfo=minfo)
 
